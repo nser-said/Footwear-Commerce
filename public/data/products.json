@@ -1,0 +1,64 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "حذاء رياضي نايك Air Zoom",
+      "brand": "Nike",
+      "price": 1200,
+      "currency": "EGP",
+      "category": "رجالي",
+      "sizes": [40, 41, 42, 43, 44],
+      "colors": ["أبيض", "أسود", "رمادي"],
+      "image": "/images/jordan.png",
+      "description": "حذاء نايك Air Zoom خفيف ومريح مناسب للجري والاستخدام اليومي."
+    },
+    {
+      "id": 2,
+      "name": "حذاء Adidas Ultraboost",
+      "brand": "Adidas",
+      "price": 1450,
+      "currency": "EGP",
+      "category": "رجالي",
+      "sizes": [41, 42, 43, 44, 45],
+      "colors": ["أسود", "أزرق"],
+      "image": "/images/blazer.png",
+      "description": "حذاء Adidas Ultraboost مصنوع من خامات مرنة ويوفر راحة عالية أثناء المشي."
+    },
+    {
+      "id": 3,
+      "name": "حذاء نسائي Converse All Star",
+      "brand": "Converse",
+      "price": 950,
+      "currency": "EGP",
+      "category": "نسائي",
+      "sizes": [36, 37, 38, 39, 40],
+      "colors": ["أبيض", "وردي", "أسود"],
+      "image": "/images/blazer2.png",
+      "description": "حذاء Converse All Star الكلاسيكي بتصميم أنيق يناسب الاستخدام اليومي."
+    },
+    {
+      "id": 4,
+      "name": "حذاء Puma RS-X",
+      "brand": "Puma",
+      "price": 1100,
+      "currency": "EGP",
+      "category": "رجالي",
+      "sizes": [40, 41, 42, 43],
+      "colors": ["أبيض", "أزرق"],
+      "image": "/images/hippie.png",
+      "description": "تصميم عصري من Puma RS-X بخامات قوية ومريحة."
+    },
+    {
+      "id": 5,
+      "name": "حذاء Vans Old Skool",
+      "brand": "Vans",
+      "price": 890,
+      "currency": "EGP",
+      "category": "男女",
+      "sizes": [38, 39, 40, 41, 42, 43],
+      "colors": ["أسود", "رمادي"],
+      "image": "/images/hippie2.png",
+      "description": "حذاء Vans Old Skool بتصميم كلاسيكي يناسب جميع الإطلالات."
+    }
+  ]
+}
