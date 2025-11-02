@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/CartContext";
+import SwRegister from "../components/SwRegister";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,18 +29,24 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        {/* Core PWA tags */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0d9488" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-     
-      
         <CartProvider>
-           <Header />
+          {/* Register service worker on client (production only) */}
+          <SwRegister />
+          <Header />
           {children}
           <Footer />
-          </CartProvider>
-        
-  
+        </CartProvider>
       </body>
     </html>
   );
