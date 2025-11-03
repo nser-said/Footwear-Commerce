@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/CartContext";
 import SwRegister from "../components/SwRegister";
+import InstallPrompt from "../components/InstallPrompt";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -43,6 +44,8 @@ export default function RootLayout({ children }) {
         <CartProvider>
           {/* Register service worker on client (production only) */}
           <SwRegister />
+          {/* Show install prompt when available (beforeinstallprompt) */}
+          <InstallPrompt />
           <Header />
           {children}
           <Footer />
