@@ -1,57 +1,47 @@
-"use client"
-
-import { useEffect, useState } from "react"
+"use client";
+import { useEffect, useState } from "react";
 
 export default function InstallPrompt() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null)
-  const [visible, setVisible] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   useEffect(() => {
     const handler = (e) => {
-      // Prevent Chrome's mini-infobar from appearing on mobile
-      e.preventDefault()
-      setDeferredPrompt(e)
-      setVisible(true)
-    }
+      e.preventDefault();
+      console.log("✅ beforeinstallprompt event fired");
+      setDeferredPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
 
-    window.addEventListener('beforeinstallprompt', handler)
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
 
-    return () => window.removeEventListener('beforeinstallprompt', handler)
-  }, [])
-
-  const onInstallClick = async () => {
-    if (!deferredPrompt) return
-    try {
-      deferredPrompt.prompt()
-      const choiceResult = await deferredPrompt.userChoice
-      // choiceResult.outcome is 'accepted' or 'dismissed'
-      setVisible(false)
-      setDeferredPrompt(null)
-      // You can send analytics here if needed
-      // console.log('Install choice', choiceResult)
-    } catch (err) {
-      // console.warn('install failed', err)
-    }
-  }
-
-  if (!visible) return null
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to install prompt: ${outcome}`);
+    setDeferredPrompt(null);
+  };
 
   return (
-    <div style={{ position: 'fixed', bottom: 16, right: 16, zIndex: 1000 }}>
+    deferredPrompt && (
       <button
-        onClick={onInstallClick}
+        onClick={handleInstallClick}
         style={{
-          background: '#0d9488',
-          color: '#fff',
-          border: 'none',
-          padding: '10px 14px',
-          borderRadius: 8,
-          cursor: 'pointer',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+          position: "fixed",
+          bottom: 20,
+          right: 20,
+          padding: "10px 20px",
+          background: "#0d9488",
+          color: "#fff",
+          border: "none",
+          borderRadius: "10px",
+          cursor: "pointer",
+          zIndex: 9999
         }}
       >
-        Install App
+        📲 تثبيت التطبيق
       </button>
-    </div>
-  )
+    )
+  );
 }

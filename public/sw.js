@@ -1,24 +1,27 @@
-self.addEventListener("install", (event) => {
-  console.log("Service Worker: Installed");
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open('static-cache-v3').then((cache) => {
+      return cache.addAll([
+        '/',
+        '/manifest.json',
+        '/icons/icon-192x192.png',
+        '/icons/icon-512x512.png'
+      ]).catch((err) => {
+        console.warn('⚠️ Cache addAll failed:', err);
+      });
+    })
+  );
 });
 
-self.addEventListener("activate", (event) => {
-  console.log("Service Worker: Activated");
-  return self.clients.claim();
-});
+self.addEventListener('fetch', (event) => {
+  const url = event.request.url;
 
-self.addEventListener("fetch", (event) => {
+  // ✅ تجاهل روابط Chrome Extensions
+  if (url.startsWith('chrome-extension://')) return;
+
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return (
-        response ||
-        fetch(event.request).then((fetchResponse) => {
-          return caches.open("dynamic-cache").then((cache) => {
-            cache.put(event.request.url, fetchResponse.clone());
-            return fetchResponse;
-          });
-        })
-      );
+    caches.match(event.request).then((res) => {
+      return res || fetch(event.request).catch(() => caches.match('/'));
     })
   );
 });

@@ -24,19 +24,5 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshots/تنزيل.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "/screenshots/تنزيل.png",
-      "sizes": "640x1136",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
   ]
 }
