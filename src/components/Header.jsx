@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const { cart } = useCart();
+  const { cart, increaseQuantity, decreaseQuantity, clearCart } = useCart();
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
   const router = useRouter();
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -21,117 +23,194 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-background-light dark:bg-background-dark border-b border-gray-200 dark:border-gray-800">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* الشعار والقائمة */}
-          <div className="flex items-center gap-8">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-black dark:text-white"
-            >
-              <svg
-                className="h-6 w-6 text-primary"
-                fill="currentColor"
-                viewBox="0 0 48 48"
-              >
-                <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" />
-              </svg>
-              <h1 className="text-xl font-bold">Footwear</h1>
+    <>
+      {/* Header */}
+      <header className="sticky top-0 z-[900] bg-white dark:bg-gray-900 backdrop-blur-md bg-opacity-90 dark:bg-opacity-90 border-b border-gray-200 dark:border-gray-800 transition-all duration-300">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 w-full">
+
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 text-black dark:text-white group">
+
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Footwear</h1>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6">
-              <a className="nav-link cursor-pointer hover:text-primary" href="/">
-                New Arrivals
-              </a>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-6">
+              <nav className="flex items-center gap-6">
+                <Link className="hover:text-primary" href="/">New Arrivals</Link>
+                <Link className="hover:text-primary" href="/contact">Contact Us</Link>
+                <Link className="hover:text-primary" href="/about">About Us</Link>
+                <Link className="hover:text-primary" href="/checkout">Checkout</Link>
+              </nav>
 
-              <a className="nav-link cursor-pointer hover:text-primary" href="/contact">
-                Contact Us
-              </a>
-              <a className="nav-link cursor-pointer hover:text-primary" href="/about">
-                About Us
-              </a>
-              <a className="nav-link cursor-pointer hover:text-primary" href="/checkout">
-                checkout
-              </a>
-            </nav>
-          </div>
+              {/* Search */}
+              <form onSubmit={handleSearch} className="flex items-center bg-gray-200 dark:bg-black/20 rounded-lg px-3">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="bg-transparent border-none outline-none text-sm py-1 w-40"
+                />
+                <button type="submit" className="text-primary font-bold px-2" aria-label="Search">🔍</button>
+              </form>
+            </div>
 
-          {/* البحث والسلة والصورة */}
-          <div className="flex items-center gap-4">
-            <form
-              onSubmit={handleSearch}
-              className="hidden sm:flex items-center bg-white dark:bg-black/20 rounded-lg shadow-sm px-3"
-            >
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-transparent border-none outline-none text-sm py-1"
-              />
-              <button type="submit" className="text-primary font-bold px-2" aria-label="Search">
-                🔍
-              </button>
-            </form>
+            {/* Right Side (Cart + Menu) */}
+            <div className="flex items-center gap-4">
 
-
-            {/* زر السلة */}
-            <button
-              onClick={() => setOpen(!open)}
-              className="relative  flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white hover:bg-primary/90 transition"
-              aria-label="Shopping Cart"
-            >
-              🛒
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-xs px-2 py-[2px] rounded-full text-white">
-                  {cartCount}
-
-
-                </span>
-              )}
-            </button>
-            {/* صورة المستخدم */}
-            {/* نافذة السلة المنسدلة */}
-            {open && (
-              <div className="absolute right-4 top-16 w-72 bg-white dark:bg-gray-800 shadow-xl rounded-xl p-4 border border-gray-200 dark:border-gray-700 z-50">
-                <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-3">
-                  🛍️ سلة المشتريات
-                </h3>
-
-                {cart.length === 0 ? (
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    لا توجد منتجات في السلة بعد.
-                  </p>
-                ) : (
-                  <ul className="space-y-2 max-h-60 overflow-y-auto">
-                    {cart.map((item, index) => (
-                      <li key={index} className="flex justify-between text-sm">
-                        <span className="text-gray-700 dark:text-gray-200">{item.name}</span>
-                        <span className="text-gray-500 dark:text-gray-400">
-                          {item.quantity} × {item.price}$
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+              {/* Cart Button Desktop */}
+              <button
+                onClick={() => setOpen(true)}
+                className="hidden md:flex relative items-center justify-center w-10 h-10 rounded-full bg-primary text-white hover:bg-primary/90 transition"
+                aria-label="Open shopping cart"
+              >
+                🛒
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-xs px-2 py-[2px] rounded-full">
+                    {cartCount}
+                  </span>
                 )}
+              </button>
 
-                <Link
-                  href="/checkout"
-                  className="block mt-4 bg-primary text-white text-center py-2 rounded-lg hover:bg-primary/90 transition"
-                >
-                  إتمام الشراء
-                </Link>
-              </div>
-            )}
-
+              {/* Mobile Menu Button */}
+              <button
+                className="md:hidden text-3xl text-black dark:text-white hover:text-primary transition-colors"
+                onClick={() => setMenuOpen(true)}
+                aria-label="Open menu"
+              >
+                ☰
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="fixed inset-0 bg-black/50 z-[999] transition-opacity duration-300" onClick={() => setMenuOpen(false)}>
+            <div
+              className="w-64 sm:w-80 bg-white dark:bg-gray-900 h-full p-5 shadow-xl transform transition-transform duration-300 ease-out"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="text-2xl mb-6 hover:text-red-500 transition-colors" onClick={() => setMenuOpen(false)} aria-label="Close menu">✖</button>
+
+              {/* Mobile Search */}
+              <form onSubmit={handleSearch} className="flex items-center bg-gray-200 dark:bg-black/20 rounded-lg px-3 mb-6">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="bg-transparent border-none outline-none text-sm py-1 w-full"
+                />
+                <button type="submit" className="text-primary font-bold px-2" aria-label="Search">🔍</button>
+              </form>
+
+              {/* Mobile Nav Links */}
+              <ul className="space-y-4 text-lg">
+                <li><Link href="/" onClick={() => setMenuOpen(false)}>New Arrivals</Link></li>
+                <li><Link href="/contact" onClick={() => setMenuOpen(false)}>Contact Us</Link></li>
+                <li><Link href="/about" onClick={() => setMenuOpen(false)}>About Us</Link></li>
+                <li><Link href="/checkout" onClick={() => setMenuOpen(false)}>Checkout</Link></li>
+              </ul>
+
+              {/* Mobile Cart */}
+              <div className="mt-6">
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setOpen(true);
+                  }}
+                  className="w-full flex items-center gap-3 bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary/90 transition-colors"
+                  aria-label="View shopping cart"
+                >
+                  🛒 <span>Cart</span>
+
+                  {cartCount > 0 && (
+                    <span className="ml-auto bg-red-600 text-xs px-2 py-[2px] rounded-full">
+                      {cartCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* ================================
+         🚀 CART DRAWER (Amazon Style)
+      ================================= */}
+
+      {open && (
+        <div className="fixed inset-0 bg-black/50 z-[999] transition-opacity duration-300" onClick={() => setOpen(false)}>
+          <div
+            className="fixed right-0 top-0 h-full w-full sm:w-96 max-w-md bg-white dark:bg-gray-900 shadow-xl p-5 transform translate-x-0 transition-all duration-300 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6 sticky top-0 bg-white dark:bg-gray-900 pb-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold">Your Cart ({cartCount})</h2>
+              <button className="text-2xl hover:text-red-500 transition-colors" onClick={() => setOpen(false)} aria-label="Close cart">✖</button>
+            </div>
+
+            {/* Clear All Button */}
+            {cart.length > 0 && (
+              <button
+                onClick={clearCart}
+                className="w-full mb-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors font-semibold text-sm"
+                aria-label="Clear all items from cart"
+              >
+                Clear All Items
+              </button>
+            )}
+
+            {/* Items */}
+            <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+              {cart.length === 0 ? (
+                <p className="text-gray-600">Your cart is empty.</p>
+              ) : (
+                cart.map((item) => (
+                  <div key={item.id} className="flex items-start gap-3 border-b pb-3">
+                    <img src={item.image} alt={item.name} className="w-16 h-16 rounded object-cover flex-shrink-0" />
+                    <div className="flex flex-col flex-grow">
+                      <p className="font-semibold">{item.name}</p>
+                      <p className="text-primary font-bold">${item.price}</p>
+
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          onClick={() => decreaseQuantity(item.id)}
+                          className="w-7 h-7 flex items-center justify-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-md transition-colors font-bold text-lg"
+                          aria-label={`Decrease quantity of ${item.name}`}
+                        >
+                          −
+                        </button>
+                        <span className="text-sm font-semibold min-w-[30px] text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => increaseQuantity(item.id)}
+                          className="w-7 h-7 flex items-center justify-center bg-gray-200 hover:bg-primary/90 text-black rounded-md transition-colors font-bold text-lg"
+                          aria-label={`Increase quantity of ${item.name}`}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Checkout Button */}
+            <button className="mt-5 w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-semibold" aria-label="Proceed to checkout">
+              Go to Checkout
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
-
-
-
-
